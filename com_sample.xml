@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.5"
+         type="plugin"
+         group="sh404sefextplugins"
+         method="upgrade">
+	<name>sh404sef - Sample component support plugin</name>
+	<author>Yannick Gaultier</author>
+	<creationDate>@ant_current_date@</creationDate>
+	<copyright>2011 Yannick Gaultier</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>dev.anything-digital.com</authorUrl>
+	<version>1.0</version>
+	<description>Provide default support for sef urls and meta data</description>
+	<files>
+		<filename plugin="com_sample">com_sample.php</filename>
+		<folder>plugins</folder>
+	</files>
+</install>
