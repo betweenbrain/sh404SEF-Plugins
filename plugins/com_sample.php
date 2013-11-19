@@ -1,22 +1,13 @@
 <?php defined('_JEXEC') or die;
 
 /**
- * sh404SEF support for com_XXXXX component.
- * Author :
- * contact :
+ * standard plugin initialization - don't change
  *
- * This is a sample sh404SEF native plugin file
+ * @var $shLangName : needed to handle translation, automatically set
  *
+ * @var $dosef      : FALSE forces the URL back to non-sef
  */
 
-
-/**
- * standard plugin initialize function - don't change
- *
- * @var $shLangName needed to handle tranlsation, automatically set within the Initialization section of the plugin
- *
- * Setting $dosef to false forces the URL back to non-sef.
- */
 global $sh_LANG;
 $sefConfig      = & shRouter::shGetConfig();
 $shLangName     = '';
@@ -28,33 +19,24 @@ if ($dosef == FALSE) {
 	return;
 }
 
-
 /**
  * load language file - adjust as needed
+ *
  */
-
-//$shLangIso = shLoadPluginLanguage( 'com_XXXXX', $shLangIso, '_SEF_SAMPLE_TEXT_STRING');
-
+$shLangIso = shLoadPluginLanguage( 'com_XXXXX', $shLangIso, '_SEF_SAMPLE_TEXT_STRING');
 
 /**
- * Application and menu objects
+ * Build SEF URL based on menu tree
  *
+ * @var $title           : an array to contain SEF URL parts, in order
+ * @var $shCurrentItemid : contains the current page Itemid
+ *
+ * @since v1.0
  */
 
 $this->app  = JFactory::getApplication();
 $this->menu = $this->app->getMenu();
 $this->item = $this->menu->getItem($Itemid);
-
-
-/**
- * Build SEF URL based on menu tree
- *
- * @var $title: an array to contain SEF URL parts in order
- *
- * @var $shCurrentItemid : contains the current page Itemid
- *
- * @since v1.0
- */
 
 foreach ($this->item->tree as $id) {
 	$item    = $this->menu->getItem($id);
@@ -64,18 +46,19 @@ foreach ($this->item->tree as $id) {
 /**
  * Remove common variables from the URL (GET vars list).
  *
- * @function shRemoveFromGETVarsList() : tells sh404SEF® that a variable has been turned into its SEF equivalent, or is not required, and to not add to the URL anymore.
+ * @function shRemoveFromGETVarsList() : removes passed variable from the URL.
  *
- * All parameters contained in the non-sef URL have already been extracted and set as variables (e.g. &task=view is included as $view).
+ * All parameters in the non-sef URL are already set as variables (e.g. &task=view is $task).
+ * &title= is set as $sh404SEF_title
  *
- * If using title as a parameter in URL, the content &title= is stored in the $sh404SEF_title variable
- *
- * Test variable existence using isset() or empty()  before using a variable.
+ * Test variable existence using isset() or empty() before using it.
  *
  */
 
 shRemoveFromGETVarsList('option');
+
 shRemoveFromGETVarsList('lang');
+
 if (!empty($Itemid)) {
 	shRemoveFromGETVarsList('Itemid');
 }
@@ -84,12 +67,41 @@ if (!empty($limit)) {
 }
 if (isset($limitstart)) {
 	shRemoveFromGETVarsList('limitstart');
-} // limitstart can be zero
+}
 
 /**
- * start by inserting the menu element title (just an idea, this is not required at all)
+ * Function to return a regular content element title
  *
- * all cleaning up, url encoding, characters replacement, etc is done automatically by sh404SEF.
+ * $task can be 'section', 'category', 'blogsection', 'blogcategory' or 'view'.
+ * $id is the section, category or content element id. If $id is set, then the corresponding section, category or element title will be fetched from database and returned (alias can be returned for content elements, according to sh404SEF® backend params). If no $id is passed to the function, then it will return the menu element title instead (internally using getMenuTitle())
+ */
+
+if (isset($task) && isset($id)) {
+	$title[] = sef_404::getContentTitles($task, $id, $Itemid, $shLangName);
+}
+
+/**
+ * Create shortened URL
+ *
+ */
+
+shMustCreatePageId('set', TRUE);
+
+/**
+ * Get categories by ID
+ *
+ */
+if (isset($id)) {
+	$cats = sef_404::getcategories($id, $shLangName);
+}
+
+/**
+ *
+ * Exmaple of building SEF URL
+ *
+ * Starts by inserting the menu element title
+ *
+ * All cleaning up, url encoding, characters replacement, etc is done automatically by sh404SEF.
  * you should not insert yourself a language code in the SEF URL
  *
  * @function getMenuTitle() : return the menu item title corresponding to either an option or Itemid, combined with language information.
@@ -139,7 +151,7 @@ switch ($task) {
 }
 
 /**
- * standard plugin finalize function - don't change
+ * Standard plugin finalization function - don't change
  */
 
 if ($dosef) {
