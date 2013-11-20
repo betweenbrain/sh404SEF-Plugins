@@ -23,7 +23,7 @@ if ($dosef == FALSE) {
  * load language file - adjust as needed
  *
  */
-$shLangIso = shLoadPluginLanguage( 'com_XXXXX', $shLangIso, '_SEF_SAMPLE_TEXT_STRING');
+$shLangIso = shLoadPluginLanguage('com_XXXXX', $shLangIso, '_SEF_SAMPLE_TEXT_STRING');
 
 /**
  * Build SEF URL based on menu tree
@@ -38,9 +38,11 @@ $this->app  = JFactory::getApplication();
 $this->menu = $this->app->getMenu();
 $this->item = $this->menu->getItem($Itemid);
 
-foreach ($this->item->tree as $id) {
-	$item    = $this->menu->getItem($id);
-	$title[] = $item->alias;
+if (isset($Itemid)) {
+	foreach ($this->item->tree as $id) {
+		$item    = $this->menu->getItem($id);
+		$title[] = $item->alias;
+	}
 }
 
 /**
