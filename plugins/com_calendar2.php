@@ -14,13 +14,9 @@ if ($dosef == FALSE) {
 // ------------------  standard plugin initialize function - don't change ---------------------------
 
 $this->app  = JFactory::getApplication();
+$this->db   = JFactory::getDBO();
 $this->menu = $this->app->getMenu();
 $this->item = $this->menu->getItem($Itemid);
-
-// die('<pre>' . print_r($task, TRUE) . '<pre>');
-// echo('<pre>' . print_r($this->item, true) . '<pre>');
-
-// remove common URL from GET vars list
 
 shRemoveFromGETVarsList('option');
 
@@ -35,18 +31,21 @@ if (!empty($limit)) {
 if (isset($limitstart)) {
 	shRemoveFromGETVarsList('limitstart');
 }
-
-shRemoveFromGETVarsList('category_id');
-
-shRemoveFromGETVarsList('secondarycategory_id');
+if (isset($category_id)) {
+	shRemoveFromGETVarsList('category_id');
+}
+if (isset($secondarycategory_id)) {
+	shRemoveFromGETVarsList('secondarycategory_id');
+}
 
 /**
  * Build SEF URL based on menu tree
  */
-
-foreach ($this->item->tree as $id) {
-	$item    = $this->menu->getItem($id);
-	$title[] = $item->alias;
+if (isset($Itemid)) {
+	foreach ($this->item->tree as $id) {
+		$item    = $this->menu->getItem($id);
+		$title[] = $item->alias;
+	}
 }
 
 if ($event_date) {
@@ -56,6 +55,29 @@ if ($event_date) {
 	}
 
 	shRemoveFromGETVarsList('event_date');
+}
+
+if (isset($instance_id)) {
+
+	$query = 'SELECT ' . $this->db->nameQuote('event_id') . '
+			FROM ' . $this->db->nameQuote('#__calendar2_eventinstances') . '
+			WHERE ' . $this->db->nameQuote('eventinstance_id') . ' = ' . $this->db->quote($instance_id);
+
+	$this->db->setQuery($query);
+	$event_id = $this->db->loadResult();
+
+	$query = 'SELECT ' . $this->db->nameQuote('event_alias') . '
+			FROM ' . $this->db->nameQuote('#__calendar2_events') . '
+			WHERE ' . $this->db->nameQuote('event_id') . ' = ' . $this->db->quote($event_id);
+
+	$this->db->setQuery($query);
+	$alias = $this->db->loadResult();
+
+	$title[] = $alias;
+	$title[] = $instance_id;
+
+	shRemoveFromGETVarsList('id');
+	shRemoveFromGETVarsList('instance_id');
 }
 
 shMustCreatePageId('set', TRUE);
@@ -71,4 +93,3 @@ if ($dosef) {
 		(isset($shLangName) ? @$shLangName : NULL));
 }
 // ------------------  standard plugin finalize function - don't change ---------------------------
-  
