@@ -44,6 +44,14 @@ foreach ($this->item->tree as $id) {
 }
 
 /**
+ * Discover and add all vars to URL
+ *
+ */
+foreach ($vars as $key => $var) {
+	$title[] = $key . '-' . $var;
+}
+
+/**
  * Remove common variables from the URL (GET vars list).
  *
  * @function shRemoveFromGETVarsList() : removes passed variable from the URL.
