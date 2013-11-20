@@ -33,9 +33,9 @@ defined('_JEXEC') or die;
  *
  * @author Yannick Gaultier
  */
-class  Sh404sefExtpluginCom_CHANGEME extends Sh404sefClassBaseextplugin {
+class  Sh404sefExtpluginCom_findingaids extends Sh404sefClassBaseextplugin {
 
-	protected $_extName = 'com_CHANGEME';
+	protected $_extName = 'com_findingaids';
 
 	public function __construct($option, $config) {
 
@@ -56,6 +56,6 @@ class  Sh404sefExtpluginCom_CHANGEME extends Sh404sefClassBaseextplugin {
 	 */
 	protected function _findSefPluginPath($nonSefVars = array()) {
 
-		$this->_sefPluginPath = JPATH_ROOT . DS . 'plugins' . DS . 'sh404sefextplugins' . DS . 'plugins' . DS . 'com_CHANGEME.php';
+		$this->_sefPluginPath = JPATH_ROOT . DS . 'plugins' . DS . 'sh404sefextplugins' . DS . 'plugins' . DS . 'com_findingaids.php';
 	}
 }
